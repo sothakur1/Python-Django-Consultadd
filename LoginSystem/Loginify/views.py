@@ -62,20 +62,21 @@ def update_user(request, email):
             user = UserDetails.objects.get(email=email)
             data = json.loads(request.body)
 
-            username = data.get('username')
-            password = data.get('password')
+            new_username  = data.get('username')
+            new_password = data.get('password')
 
-            if username:
-                user.username = username
-            if password:
-                user.password = password
+            if new_username:
+                user.username = new_username
+            if new_password:
+                user.password = new_password
 
             user.save()
             return JsonResponse({'message': 'User updated successfully'})
         except UserDetails.DoesNotExist:
             return JsonResponse({'error': 'User not found'}, status=404)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+       
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
 
     return JsonResponse({'error': 'Invalid request method'}, status=405)
 
